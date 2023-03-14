@@ -1,0 +1,7 @@
+tiny_font.png:
+  type: font
+  name: tiny_font
+  charset: numeric
+  grid.size: 3x4
+  grid.padding: 1
+  proportional: true

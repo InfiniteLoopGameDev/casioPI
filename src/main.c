@@ -1,6 +1,6 @@
 #include <gint/display.h>
 #include <gint/keyboard.h>
-#define N 188
+#define N 263
 #define len ((10 * N/3) + 1)
 
 int A[len] = {[0 ... len-1] = 2}; // Non-standard array initialization GCC only
@@ -8,22 +8,25 @@ int A[len] = {[0 ... len-1] = 2}; // Non-standard array initialization GCC only
 int nines = 0;
 int predigit = 0;
 
-int x_pos = 6;
+int x_pos = 4;
 int y_pos = 0;
 
 int skip_count = 2;
 
 void add_digit(int digit) {
 	if (skip_count > 0) {
-		if (skip_count == 1) { dtext(0, 0, C_BLACK, "3."); }
+		if (skip_count == 1) { 
+            dtext(0, 0, C_BLACK, "3");
+            dpixel(5, 3, C_BLACK);
+        }
 		--skip_count;
 		return;
 	}
 	char buf = digit + '0';
-	x_pos += 6;
-	if (x_pos > 121) {
+	x_pos += 4;
+	if (x_pos > 123) {
 		x_pos = 0;
-		y_pos += 8;
+		y_pos += 5;
 	}
 	dtext(x_pos, y_pos, C_BLACK, &buf);
 	dupdate();
@@ -35,6 +38,10 @@ void add_digit(int digit) {
 // https://www.maa.org/sites/default/files/pdf/pubs/amm_supplements/Monthly_Reference_12.pdf
 
 int main(void) {
+    extern font_t tiny_font;
+
+    dfont(&tiny_font);
+
     for(int j = 1; j < N + 1; ++j) {
         int q = 0;
 

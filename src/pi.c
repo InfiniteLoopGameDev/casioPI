@@ -21,7 +21,7 @@ void pi_rabinowitz(int num, char *buf){
     int nines = 0;
     int predigit = 0;
 
-    for(int j = 0; j < num; ++j) {
+    while (current_digit < num) {
         int q = 0;
 
         for(int i = len; i > 0; --i) {

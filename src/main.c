@@ -1,5 +1,6 @@
 #include <gint/display.h>
 #include <gint/keyboard.h>
+#include <stdlib.h>
 
 #include "pi.h"
 
@@ -36,13 +37,15 @@ int main(void) {
     dfont(&tiny_font);
 
     // Get first 52 digits of pi before switch to bellard
-    char digits[52];
+    char *digits;
+    digits = (char *) malloc(52);
     pi_rabinowitz(51, digits); // Generates 1 more character than needed
 
     // Print first 52 digits
     for (int i = 0; i < 52; ++i) {
         add_digit(digits[i]);
     }
+    free(digits); // Free digits from memory
 
     // Get key before quitting app preventing the app from closing
     getkey();

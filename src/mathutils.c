@@ -21,9 +21,9 @@ int prime_factorisation(int64_t integer, int64_t *factors , int max_factors, int
     int64_t p = 16;
     int64_t ac = 9;
     while (f <= prime_limit & factor_count < max_factors) { // Stop if factor is greater than the limit or exceeded lenght of array
-        ac += p;
+        ac += p; // ac, p, and f are all witchcraft to me its based off wikipedia 
         if (ac > integer) break;
-        if (integer % f == 0) {
+        if (integer % f == 0) { // Check if is factor
             factors[factor_count++] = f; // Add factor to array
             while (integer % f == 0) { // No repeated factors needed
                 integer /= f; // Divide all of them
@@ -39,4 +39,10 @@ int prime_factorisation(int64_t integer, int64_t *factors , int max_factors, int
     }
     
     return factor_count;
+}
+
+
+/* Multiple of factor closest to n but not greater*/
+int64_t closest_multiple(int64_t n, int64_t factor) {
+    return factor * (n / factor);
 }

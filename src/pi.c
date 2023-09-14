@@ -1,7 +1,5 @@
 #include <stdlib.h>
 
-#include "pi.h"
-
 void append_digit(int digit, char *buf, int *pos) {
     buf[*pos] = (digit + '0');
     (*pos)++;

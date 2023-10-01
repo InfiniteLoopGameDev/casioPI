@@ -1,4 +1,4 @@
-#include <stdlib.h>
+#include <stdint.h>
 
 int64_t mul_mod(int64_t a, int64_t b, int64_t m);
 

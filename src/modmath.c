@@ -1,9 +1,10 @@
-#include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
 #include "mathutils.h"
 
 const int MAX_FACTORS = 20;
 
-/* Modular Multiplication
+/* Modular Multiplication (for unsigned integers)
    a*b mod m
    Based of code found on Wikipedia
    https://en.wikipedia.org/wiki/Modular_arithmetic#Example_implementations */
@@ -74,21 +75,31 @@ int64_t pow_mod(int64_t a, int64_t b, int64_t m) {
 
 /* Sum of binomials modulo an integer
     ∑ ^k ̌ j (binom(N, j) mod m)
-    Based of the original algoritm 
+    Based of the original algorithm 
     http://numbers.computation.free.fr/Constants/Algorithms/nthdecimaldigit.pdf
     and its official implementation
     http://numbers.computation.free.fr/Constants/Algorithms/pidec.cpp */
 int64_t sum_binomial_mod(int64_t k, int64_t N, int64_t m) {
-    int64_t prime_factors[MAX_FACTORS] = {0}; // List of prime factors (non repeating) of m
+    // TODO: malloc some this sh*t
+    // TODO: Optimisation when k>n/2 ->  2^n - sum_{j=0}^{n-k-1} binomial(n,j)
+
+    if (k > N / 2) {
+        return pow_mod(2, N, m) - sum_binomial_mod(N, N - k - 1, m);
+    }
+
+    int64_t prime_factors[MAX_FACTORS]; // List of prime factors (non repeating) of m
     int factor_count = prime_factorisation(m, prime_factors, MAX_FACTORS, k);
 
     int64_t A = 1, B = 1, C = 1;
     int64_t R[MAX_FACTORS];
+
+    // TODO: Try without this silliness and just using a % prime == 0
     int64_t closest_multiple_a[MAX_FACTORS]; // Arrays that stores closest multiple of p[i] for a
     int64_t closest_multiple_b[MAX_FACTORS]; // Array that stores closest multiple of p[i] for b
     for (int i = 0; i < factor_count; i++) {
         R[i] = 1;
         closest_multiple_a[i] = closest_multiple(N, prime_factors[i]); // Starting with multiple of p[i] to N as a starts as N
+        // TODO: memcpy?
         closest_multiple_b[i] = prime_factors[i]; // Starting with p[i], b starts at 1, so won't be won't be factor until equal 
     }
 
@@ -130,7 +141,7 @@ int64_t sum_binomial_mod(int64_t k, int64_t N, int64_t m) {
 
         if (R_array_updated == 1) {
             R_product = R[0];
-            for (int i = 0; i < prime_factors; i++) {
+            for (int i = 0; i < factor_count; i++) {
                 R_product = mul_mod(R_product, R[i], m);
             }
         }
@@ -144,6 +155,6 @@ int64_t sum_binomial_mod(int64_t k, int64_t N, int64_t m) {
             C = sum_mul_mod(C, b_complement, A, R_product, m);
         }
     }
-    int64_t sum = mul_mod(C, inv_mod(B, m), m);
+    int64_t sum = (C * inv_mod(B, m)) % m;
     return sum;
 }

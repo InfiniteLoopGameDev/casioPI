@@ -1,4 +1,4 @@
-#include <stdlib.h>
+#include <stdint.h>
 
 /* Trial Division Prime factorization algoritm 
    factors should be an array of all (non-repeated) prime factors of length max_factors with a maximum value of prime_limit

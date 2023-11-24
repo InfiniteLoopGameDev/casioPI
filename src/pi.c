@@ -62,42 +62,44 @@ void pi_rabinowitz(int num, char *buf){
     free(A);
 }
 
-float pi_bellard(long num, char *buf) {
+double pi_bellard(long num, char *buf) {
     long M = 2 * ceil((float) num / pow(log(num), 3));
     long N = ceil((num + NUMBER_OF_DIGITS + 1) * log(10) / (1 + log(2 * M))); // should be labelled ln on the paper
     N += N%2; // Make N next even number
 
-    float b = 0;
+    double b = 0;
     //TODO: Investigate 2k+1 - 2k+3 in k+2 increments
     // Could bring performance improvments
     for (long k = 0; k < ((M + 1) * N); k++) {
         long exponent = pow_mod(10, num, 2*k+1);
         long x = mul_mod(4, exponent, 2*k+1);
-        float operation = k % 2 == 0 ? 1. : -1.; // Subtract if odd, add if even
-        b += operation * ((float) x / (float) (2*k+1));
+        double operation = k % 2 == 0 ? 1. : -1.; // Subtract if odd, add if even
+        b += operation * ((double) x / (double) (2*k+1));
         b -= floor(b); // Only keep fractional part
     }
-    printf("b: %f\n", b);
 
-    float c = 0;
+    double c = 0;
     for (long k = 0; k < N; k++) {
         long modulus = 2 * M * N + 2 * k + 1;
         long x = sum_binomial_mod(k, N, modulus);
-        printf("k: %d, N: %d, mod: %d, x: %d\n", k, N, modulus, x);
         long lhs = pow_mod(5, N - 2, modulus);
         long rhs = pow_mod(10, num - N + 2, modulus);
         long y = mul_mod(lhs, rhs, modulus);
-        float operation = k % 2 == 0 ? 1. : -1.; // Subtract if odd, add if even
-        c += operation * (float) y / (float) modulus;
+        y = mul_mod(y, x, modulus);
+        double operation = k % 2 != 0 ? 1. : -1.; // Subtract if odd, add if even
+        double temp = operation * (double) y / (double) modulus;
+        c += operation * (double) y / (double) modulus;
         c -= floor(c); // Only keep fractional part
     }
 
-    return b - c;
+    double sum = b + c;
+    sum -= floor(sum);
+    return sum;
 }
 
 int main() {
     char empty[64];
-    float pi = pi_bellard(542, empty);
-    printf("Pi: %f\n", pi);
+    double pi = pi_bellard(15000, empty);
+    printf("Pi: %.9f\n", pi);
     return 0;
 }

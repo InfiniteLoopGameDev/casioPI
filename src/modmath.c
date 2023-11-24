@@ -1,14 +1,14 @@
 #include <stdint.h>
-#include <stdio.h>
 #include "mathutils.h"
 
 const int MAX_FACTORS = 20;
 
-/* Modular Multiplication (for unsigned integers)
+/* Modular Multiplication
    a*b mod m
    Based of code found on Wikipedia
    https://en.wikipedia.org/wiki/Modular_arithmetic#Example_implementations */
 int64_t mul_mod(int64_t a, int64_t b, int64_t m) {
+    if (a < 0 | b < 0) return (a * b) % m; // Only works on unsigned integers
     int64_t d = 0, mp2 = m >> 1;
     int64_t i;
     if (a >= m) a %= m;
@@ -84,7 +84,9 @@ int64_t sum_binomial_mod(int64_t k, int64_t N, int64_t m) {
     // TODO: Optimisation when k>n/2 ->  2^n - sum_{j=0}^{n-k-1} binomial(n,j)
 
     if (k > N / 2) {
-        return pow_mod(2, N, m) - sum_binomial_mod(N, N - k - 1, m);
+        int64_t s = pow_mod(2, N, m) - sum_binomial_mod(N - k - 1, N, m);
+        if (s < 0) s += m;
+        return s;
     }
 
     int64_t prime_factors[MAX_FACTORS]; // List of prime factors (non repeating) of m
@@ -139,9 +141,9 @@ int64_t sum_binomial_mod(int64_t k, int64_t N, int64_t m) {
             }
         }
 
-        if (R_array_updated == 1) {
+        if (R_array_updated) {
             R_product = R[0];
-            for (int i = 0; i < factor_count; i++) {
+            for (int i = 1; i < factor_count; i++) {
                 R_product = mul_mod(R_product, R[i], m);
             }
         }
@@ -155,6 +157,6 @@ int64_t sum_binomial_mod(int64_t k, int64_t N, int64_t m) {
             C = sum_mul_mod(C, b_complement, A, R_product, m);
         }
     }
-    int64_t sum = (C * inv_mod(B, m)) % m;
+    int64_t sum = mul_mod(C, inv_mod(B, m), m);
     return sum;
 }

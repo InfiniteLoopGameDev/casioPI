@@ -1,4 +1,5 @@
 # Build files
+/build
 /build-fx
 /build-cg
 /*.g1a
@@ -11,3 +12,4 @@ __pycache__/
 *.sublime-project
 *.sublime-workspace
 .vscode
+.CasioDevFiles

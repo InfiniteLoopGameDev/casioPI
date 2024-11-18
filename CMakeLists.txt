@@ -9,16 +9,17 @@ include(GenerateG3A)
 include(Fxconv)
 find_package(Gint 2.9 REQUIRED)
 
-set(SOURCES
-  src/main.c
-  src/pi.c
-)
+file(GLOB SOURCES src/*.c  src/*.h)
 
 set(ASSETS_fx
   assets-fx/tiny_font.png
 )
 
-fxconv_declare_assets(${ASSETS_fx} WITH_METADATA)
+set(ASSETS_cg
+  assets-cg/tiny_font.png
+)
+
+fxconv_declare_assets(${ASSETS_fx} ${ASSETS_cg} WITH_METADATA)
 
 add_executable(fxPI ${SOURCES} ${ASSETS_${FXSDK_PLATFORM}})
 target_compile_options(fxPI PRIVATE -Wall -Wextra -Os)
@@ -28,6 +29,6 @@ if("${FXSDK_PLATFORM_LONG}" STREQUAL fx9860G)
   generate_g1a(TARGET fxPI OUTPUT "fxPI.g1a"
     NAME "fxPI" ICON assets-fx/icon.png)
 elseif("${FXSDK_PLATFORM_LONG}" STREQUAL fxCG50)
-  generate_g3a(TARGET myaddin OUTPUT "MyAddin.g3a"
-    NAME "MyAddin" ICONS assets-cg/icon-uns.png assets-cg/icon-sel.png)
+  generate_g3a(TARGET fxPI OUTPUT "fxPI.g3a"
+    NAME "fxPI" ICONS assets-cg/icon-uns.png assets-cg/icon-sel.png)
 endif()

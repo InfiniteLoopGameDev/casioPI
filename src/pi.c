@@ -5,7 +5,7 @@
 
 #include "pi.h"
 
-const int NUMBER_OF_DIGITS = 14;
+const int NUMBER_OF_DIGITS = 13; //Any higher leads to inacurracies
 
 void append_digit(int digit, char *buf, int *pos)
 {
@@ -81,9 +81,9 @@ void pi_rabinowitz(int num, char *buf)
 
 double pi_bellard(long num)
 {
-    long M = 2 * ceil((float)num / pow(log(num), 3));
-    long N = ceil((num + NUMBER_OF_DIGITS + 1) * log(10) / (1 + log(2 * M))); // should be labelled ln on the paper
-    N += N % 2;                                                               // Make N next even number
+    long M = 2 * ceil((double)num / powl(logl(num), 3));
+    long N = ceil((num + NUMBER_OF_DIGITS) * logl(10) / (1 + logl(2 * M))); // should be labelled ln on the paper
+    N += N % 2; // Make N next even number
 
     double b = 0;
     // TODO: Investigate 2k+1 - 2k+3 in k+2 increments

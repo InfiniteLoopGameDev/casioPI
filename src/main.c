@@ -1,7 +1,10 @@
-#include <gint/display.h>
+/* #include <gint/display.h>
 #include <gint/keyboard.h>
+ */
+#include <stdio.h>
 
 #include <stdlib.h>
+#include <math.h>
 
 #include "pi.h"
 
@@ -17,9 +20,10 @@ void add_digit(char digit)
         // Logic to skip the first 2 digits of pi and print "3." instead of "03"
         if (skip_count == 1)
         {
-            dtext(0, 0, C_BLACK, "3");
+            /* dtext(0, 0, C_BLACK, "3");
             dpixel(5, 3, C_BLACK);
-            dupdate();
+            dupdate(); */
+            printf("3.");
         }
         skip_count--;
         return;
@@ -33,17 +37,19 @@ void add_digit(char digit)
             y_pos += 5;
         }
         char digit_print = digit; // Fixes a bug where a 0 is printed as after the digit
-        dtext(x_pos, y_pos, C_BLACK, &digit_print);
-        dupdate();
+        /* dtext(x_pos, y_pos, C_BLACK, &digit_print);
+        dupdate(); */
+        printf("%c", digit_print);
     }
+
 }
 
 int main(void)
 {
     // Set font to custom tiny_font.png
-    extern font_t tiny_font;
+    /* extern font_t tiny_font;
     dfont(&tiny_font);
-
+ */
     // Get first 52 digits of pi before switch to bellard
     char *digits;
     digits = (char *)malloc(97);
@@ -56,15 +62,17 @@ int main(void)
     }
     free(digits); // Free digits from memory
 
-    double pifrac = pi_bellard(95);
-    for (int i = 2; i < NUMBER_OF_DIGITS + 2; ++i)
-    {
-        pifrac -= (int) pifrac; // Doesn't use math.h :p
-        pifrac *= 10;
-        add_digit((int) pifrac + '0');
+    for (int counter = 95; counter < 300; counter += NUMBER_OF_DIGITS){
+        double pifrac = pi_bellard(counter);
+        for (int i = 0; i < NUMBER_OF_DIGITS; i++)
+        {
+            pifrac -= (int) pifrac; // Doesn't use math.h :p
+            pifrac *= 10;
+            add_digit((int) pifrac + '0');
+        }
     }
-
+    printf("\n");
     // Get key before quitting app preventing the app from closing
-    getkey();
+    //getkey();
     return 0;
 }

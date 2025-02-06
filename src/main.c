@@ -1,6 +1,7 @@
-/* #include <gint/display.h>
+#ifdef __CASIO__
+#include <gint/display.h>
 #include <gint/keyboard.h>
- */
+#endif
 #include <stdio.h>
 
 #include <stdlib.h>
@@ -20,10 +21,13 @@ void add_digit(char digit)
         // Logic to skip the first 2 digits of pi and print "3." instead of "03"
         if (skip_count == 1)
         {
-            /* dtext(0, 0, C_BLACK, "3");
+#ifdef __CASIO__
+            dtext(0, 0, C_BLACK, "3");
             dpixel(5, 3, C_BLACK);
-            dupdate(); */
+            dupdate();
+#else
             printf("3.");
+#endif
         }
         skip_count--;
         return;
@@ -37,19 +41,22 @@ void add_digit(char digit)
             y_pos += 5;
         }
         char digit_print = digit; // Fixes a bug where a 0 is printed as after the digit
-        /* dtext(x_pos, y_pos, C_BLACK, &digit_print);
-        dupdate(); */
+#ifdef __CASIO__
+        dtext(x_pos, y_pos, C_BLACK, &digit_print);
+        dupdate();
+#else
         printf("%c", digit_print);
+#endif
     }
-
 }
 
 int main(void)
 {
+#ifdef __CASIO__
     // Set font to custom tiny_font.png
-    /* extern font_t tiny_font;
+    extern font_t tiny_font;
     dfont(&tiny_font);
- */
+#endif
     // Get first 52 digits of pi before switch to bellard
     char *digits;
     digits = (char *)malloc(97);
@@ -62,17 +69,21 @@ int main(void)
     }
     free(digits); // Free digits from memory
 
-    for (int counter = 95; counter < 300; counter += NUMBER_OF_DIGITS){
+    for (int counter = 95; counter < 3000; counter += NUMBER_OF_DIGITS)
+    {
         double pifrac = pi_bellard(counter);
         for (int i = 0; i < NUMBER_OF_DIGITS; i++)
         {
-            pifrac -= (int) pifrac; // Doesn't use math.h :p
+            pifrac -= (int)pifrac; // Doesn't use math.h :p
             pifrac *= 10;
-            add_digit((int) pifrac + '0');
+            add_digit((int)pifrac + '0');
         }
     }
-    printf("\n");
+#ifdef __CASIO__
     // Get key before quitting app preventing the app from closing
-    //getkey();
+    getkey();
+#else
+    printf("\n");
+#endif
     return 0;
 }
